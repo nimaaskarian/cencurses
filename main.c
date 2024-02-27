@@ -1,30 +1,27 @@
 #include <stdio.h>
+#include <pthread.h>
 #include <stdlib.h>
 
 #include "io.h"
 #include "ascii.h"
 #include "curses-utils.h"
 
-void println(char * line) 
+void center_curses_print_ascii(char * line) 
 {
-  int str_width;
-  char ** ascii = resolve_ascii_str(line, &str_width);
-  Position str_pos = {.x = str_width, .y = FONTLEN};
-  Position mid_pos = curses_center(str_pos);
-
-  unsigned int j = 0;
+  Ascii ascii = resolve_ascii_str(line);
+  Position mid_pos = curses_center(ascii.size);
 
   clear();
-  while (ascii[j] != NULL) {
-    mvprintw(mid_pos.y+j,mid_pos.x, "%s\n", ascii[j]);
-    j++;
+  for (int j = 0; ascii.buff[j] != NULL; j++) {
+    mvprintw(mid_pos.y+j,mid_pos.x, "%s\n", ascii.buff[j]);
   }
   refresh();
 }
 
+
 int main(int argc, char *argv[])
 {
   curses_init();
-  read_file_to_fn(stdin, println);
+  read_file_to_fn(stdin, center_curses_print_ascii);
   return EXIT_SUCCESS;
 }

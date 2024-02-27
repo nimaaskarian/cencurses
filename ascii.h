@@ -1,8 +1,15 @@
 #ifndef NUMBERS_H_
 #define NUMBERS_H_
 #include <stdlib.h>
+
+#include "position.h"
+
 #define FONTLEN 5
-char ** resolve_ascii_str(char * line, int * max_size);
+typedef struct {
+  char ** buff;
+  Position size;
+} Ascii;
+Ascii resolve_ascii_str(char * line);
 extern const char * colon[FONTLEN];
 extern const char * space[FONTLEN];
 extern const char * numbers[][FONTLEN];

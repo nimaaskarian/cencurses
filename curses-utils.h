@@ -1,8 +1,7 @@
 #ifndef CURSES_UTILS_H_
+#define CURSES_UTILS_H_
 #include <ncurses.h>
-typedef struct {
-  int y, x;
-} Position;
+#include "position.h"
 void curses_init();
 void curses_quit();
 Position curses_center(Position str);

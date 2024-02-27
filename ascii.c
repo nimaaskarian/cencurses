@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "ascii.h"
+#include "curses-utils.h"
 #include "utils.h"
 
 // Variables {{{
@@ -147,20 +148,21 @@ size_t append_to_ascii(const char ** append, char ** ascii)
   return max_size;
 }
 
-char ** resolve_ascii_str(char * line, int * max_size)
+Ascii resolve_ascii_str(char * line)
 {
-  unsigned int i = 0;
-  char ** output = malloc((FONTLEN+1)*sizeof(char *));
-  init_ascii(output);
+  Ascii output;
+  output.buff = malloc((FONTLEN+1)*sizeof(char *));
+  init_ascii(output.buff);
 
-  *max_size = 0;
-  while (line[i] != '\0') {
-    const char ** ascii = resolve_ascii_ch(line[i++]);
-    int size = append_to_ascii(ascii, output);
-    if (size > *max_size)
-      *max_size = size;
+  output.size = (Position){.x = 0, .y = FONTLEN};
+
+  for (unsigned int i = 0; line[i] != '\0'; i++){
+    const char ** ascii = resolve_ascii_ch(line[i]);
+    int line_size = append_to_ascii(ascii, output.buff);
+    if (line_size > output.size.x)
+      output.size.x = line_size;
   }
-  output[FONTLEN] = NULL;
+  output.buff[FONTLEN] = NULL;
 
   return output;
 }

@@ -16,6 +16,7 @@ void curses_init()
   // no cursor and no echo
   curs_set(0);
   noecho();
+  nodelay(stdscr, FALSE);
 }
 
 void curses_quit()
