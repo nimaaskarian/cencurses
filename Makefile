@@ -1,14 +1,17 @@
 include config.mk
-NAME=numcurses
 SRC = $(wildcard *.c)
 OBJ = ${SRC:.c=.o}
 
 .c.o:
 	${CC} -c ${CFLAGS} $<
 
-all: ${NAME}
+all: ${NAME} .gitignore
 	@echo "CFLAGS: ${CFLAGS}"
 	@echo "LDFLAGS: ${LDFLAGS}"
+
+.gitignore: config.mk .gitignore_static
+	@cat .gitignore_static > .gitignore
+	@echo ${NAME} >> .gitignore
 
 ${OBJ}: config.mk
 
