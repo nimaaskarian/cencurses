@@ -147,15 +147,18 @@ size_t append_to_ascii(const char ** append, char ** ascii)
   return max_size;
 }
 
-char ** resolve_ascii_str(char * line)
+char ** resolve_ascii_str(char * line, int * max_size)
 {
   unsigned int i = 0;
   char ** output = malloc((FONTLEN+1)*sizeof(char *));
   init_ascii(output);
 
+  *max_size = 0;
   while (line[i] != '\0') {
     const char ** ascii = resolve_ascii_ch(line[i++]);
-    append_to_ascii(ascii, output);
+    int size = append_to_ascii(ascii, output);
+    if (size > *max_size)
+      *max_size = size;
   }
   output[FONTLEN] = NULL;
 

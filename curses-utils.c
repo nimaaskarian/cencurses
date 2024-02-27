@@ -2,7 +2,7 @@
 
 #include "curses-utils.h"
 
-void curses_initialize_screen()
+void curses_init()
 {
   initscr();
   if (has_colors()) {
@@ -13,7 +13,6 @@ void curses_initialize_screen()
   }
   // fast key :D
   cbreak();
-
   // no cursor and no echo
   curs_set(0);
   noecho();
@@ -25,7 +24,13 @@ void curses_quit()
   exit(EXIT_SUCCESS);
 }
 
-void curses_center(size_t str_height, size_t str_width)
+Position curses_center(Position str)
 {
+  int y, x;
+  getmaxyx(stdscr, y, x);
+  Position mid;
+  mid.y = (y-str.y)/2;
+  mid.x = (x-str.x)/2;
 
+  return mid;
 }
