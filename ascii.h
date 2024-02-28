@@ -1,3 +1,4 @@
+// vim:fileencoding=utf-8:filetype=c
 #ifndef NUMBERS_H_
 #define NUMBERS_H_
 #include <stdlib.h>

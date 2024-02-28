@@ -1,3 +1,4 @@
+// vim:fileencoding=utf-8:filetype=c
 #ifndef CURSES_UTILS_H_
 #define CURSES_UTILS_H_
 #include <ncurses.h>

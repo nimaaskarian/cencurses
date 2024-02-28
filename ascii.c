@@ -1,4 +1,4 @@
-// vim:set foldmethod=marker
+// vim:fileencoding=utf-8:foldmethod=marker
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
