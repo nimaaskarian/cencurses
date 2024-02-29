@@ -2,5 +2,12 @@
 #ifndef IO_H_
 #define IO_H_
 #include <stdio.h>
-void read_file_to_fn(FILE * file, void callback(char *));
+void read_command_to_fn(const char * cmd, void line_handler(char *));
+char * trim_left(char * str);
+char * trim_right(char * str);
+typedef struct {
+  char key;
+  char* cmd;
+} KeyCmd;
+int handle_line_to_keycmd(char * line, KeyCmd * output);
 #endif
