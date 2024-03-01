@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "ascii.h"
-#include "curses-utils.h"
 #include "utils.h"
 
 // Variables {{{
@@ -139,14 +138,8 @@ size_t append_to_ascii(const char ** append, char ** ascii)
   for (int i = 0; i < FONTLEN; i++) {
     size_t size;
     if (ascii[i]) {
-      size_t str_size = strlen(ascii[i])+1;
-      char * tmp = malloc(str_size*sizeof(char));
-      strncpy(tmp, ascii[i], str_size);
-      tmp[str_size] = '\0';
-      size = asprintf(&ascii[i], "%s%s", tmp, append[i]);
-      free(tmp);
-    }
-    else {
+      size = asprintf(&ascii[i], "%s%s", ascii[i], append[i]);
+    } else {
       size = asprintf(&ascii[i], "%s", append[i]);
     }
 

@@ -52,7 +52,7 @@ void * handle_ch(void * arguments)
       break;
       default:
         {
-          char * cmd = app->cmds[ch%CHAR_COUNT];
+          char * cmd = app->cmds[ch-CHAR_MIN];
           if (cmd != NULL)  {
             popen(cmd, "r");
             if (app->main_cmd) {
@@ -74,7 +74,7 @@ inline void app_add_line_cmd(App * app, char * line)
     curs_set(1);
     exit(EXIT_FAILURE);
   }
-  app->cmds[cmd.key%CHAR_COUNT] = cmd.cmd;
+  app->cmds[cmd.key-CHAR_MIN] = cmd.cmd;
 }
 
 void read_config_file_to_app(App * app)
