@@ -21,6 +21,7 @@ void read_command_to_fn(const char * cmd, void line_handler(char *))
     buffer[count] = '\0';
     line_handler(buffer);
   }
+  fclose(fp);
 }
 
 void read_one_time_command_to_fn(const char * cmd, void line_handler(char *))
@@ -35,6 +36,8 @@ void read_one_time_command_to_fn(const char * cmd, void line_handler(char *))
 
   buffer[count] = '\0';
   line_handler(buffer);
+
+  fclose(fp);
 }
 
 char * trim_left(char * str)

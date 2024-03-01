@@ -11,6 +11,7 @@ typedef struct {
   Position size;
 } Ascii;
 Ascii resolve_ascii_str(char * line);
+Ascii resolve_ascii_str_cmd(char * line, const char * cmd);
 extern const char * colon[FONTLEN];
 extern const char * space[FONTLEN];
 extern const char * numbers[][FONTLEN];

@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "ascii.h"
+#include "position.h"
 #include "utils.h"
 
 // Variables {{{
@@ -121,11 +122,16 @@ const char ** resolve_ascii_ch(char ch)
   return NULL;
 }
 
-void init_ascii(Ascii * ascii)
+inline void init_size(Position * size)
 {
-  ascii->size = (Position){.x = 0, .y = 0};
-  ascii->buff = malloc((FONTLEN+1)*sizeof(char *));
-  for (int i = 0; i < FONTLEN; i++) {
+  *size = (Position){.x = 0, .y = 0};
+}
+
+void init_ascii(Ascii * ascii, size_t size)
+{
+  init_size(&ascii->size);
+  ascii->buff = malloc(size*sizeof(char *));
+  for (int i = 0; i < size; i++) {
     ascii->buff[i] = NULL;
   }
 }
@@ -149,10 +155,20 @@ size_t append_to_ascii(const char ** append, char ** ascii)
   return max_size;
 }
 
+void append_line_to_ascii(const char * append, Ascii * ascii)
+{
+  if (append == NULL) return;
+  size_t size = strlen(append);
+  ascii->buff[ascii->size.y] = malloc(sizeof(char) * (size+1));
+  strncpy(ascii->buff[ascii->size.y],append, size);
+  ascii->buff[ascii->size.y][size] = '\0';
+  ascii->size.y++;
+}
+
 Ascii resolve_ascii_str(char * line)
 {
   Ascii output;
-  init_ascii(&output);
+  init_ascii(&output, FONTLEN);
 
   output.size = (Position){.x = 0, .y = FONTLEN};
 
@@ -163,6 +179,38 @@ Ascii resolve_ascii_str(char * line)
       output.size.x = line_size;
   }
   output.buff[FONTLEN] = NULL;
+
+  return output;
+}
+
+void ascii_increase_size(Ascii * ascii)
+{
+  char ** tmp = realloc(ascii->buff, (ascii->size.y+1)*sizeof(char *));
+  ascii->buff = tmp;
+}
+
+Ascii resolve_ascii_str_cmd(char * line, const char * cmd)
+{
+  Ascii output;
+  init_size(&output.size);
+  output.buff = malloc(sizeof(char *));
+  char * cmd_tmp;
+  asprintf(&cmd_tmp, "%s %s", cmd, line);
+  FILE * fp = popen(cmd_tmp, "r");
+  ssize_t read;
+  char * line_buff = NULL;
+  size_t size = 0;
+
+  while ((read = getline(&line_buff, &size, fp)) >= 0) {
+    if (output.size.y) {
+      ascii_increase_size(&output);
+    }
+    append_line_to_ascii(line_buff, &output);
+    if (read > output.size.x)
+      output.size.x = read;
+  }
+  fclose(fp);
+  free(line_buff);
 
   return output;
 }

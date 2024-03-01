@@ -9,13 +9,19 @@
 #include "ascii.h"
 #include "curses-utils.h"
 
+char * ascii_cmd = NULL;
 void center_curses_print_ascii(char * line) 
 {
-  Ascii ascii = resolve_ascii_str(line);
+  Ascii ascii;
+  if (ascii_cmd)
+    ascii = resolve_ascii_str_cmd(line,ascii_cmd);
+  else
+    ascii = resolve_ascii_str(line);
   Position mid_pos = curses_center(ascii.size);
 
   clear();
-  for (int j = 0; ascii.buff[j] != NULL; j++) {
+
+  for (int j = 0; j < ascii.size.y; j++) {
     mvprintw(mid_pos.y+j,mid_pos.x, "%s\n", ascii.buff[j]);
   }
   refresh();
@@ -46,15 +52,14 @@ void * handle_ch(void * arguments)
     switch (ch) {
       case 'q':
         curses_quit(EXIT_SUCCESS);
-        if (app->main_cmd) {
-          read_one_time_command_to_fn(app->main_cmd, center_curses_print_ascii);
-        }
       break;
       default:
         {
           char * cmd = app->cmds[ch-CHAR_MIN];
           if (cmd != NULL)  {
-            popen(cmd, "r");
+            char * tmp;
+            asprintf(&tmp,"%s > /dev/null", cmd);
+            system(tmp);
             if (app->main_cmd) {
               read_one_time_command_to_fn(app->main_cmd, center_curses_print_ascii);
             }
@@ -97,7 +102,7 @@ void read_config_file_to_app(App * app)
 
 void read_opts_to_app(int argc, char * argv[],App * app) {
   int ch;
-  while ((ch = getopt(argc, argv, "M:c:m:")) != -1) {
+  while ((ch = getopt(argc, argv, "M:c:m:a:")) != -1) {
     switch (ch) {
       case 'M':
         app->main_cont_cmd = optarg;
@@ -107,6 +112,9 @@ void read_opts_to_app(int argc, char * argv[],App * app) {
       break;
       case 'c':
         app_add_line_cmd(app, optarg);
+      break;
+      case 'a':
+        ascii_cmd = optarg;
       break;
     }
   }
