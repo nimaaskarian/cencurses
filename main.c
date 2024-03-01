@@ -102,7 +102,7 @@ void read_config_file_to_app(App * app)
 
 void read_opts_to_app(int argc, char * argv[],App * app) {
   int ch;
-  while ((ch = getopt(argc, argv, "M:c:m:a:")) != -1) {
+  while ((ch = getopt(argc, argv, "M:c:m:a:f:")) != -1) {
     switch (ch) {
       case 'M':
         app->main_cont_cmd = optarg;
@@ -115,6 +115,9 @@ void read_opts_to_app(int argc, char * argv[],App * app) {
       break;
       case 'a':
         ascii_cmd = optarg;
+      break;
+      case 'f':
+        app->config_path = optarg;
       break;
     }
   }
