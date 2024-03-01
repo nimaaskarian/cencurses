@@ -20,10 +20,10 @@ void curses_init()
   nodelay(stdscr, FALSE);
 }
 
-void curses_quit()
+void curses_quit(int code)
 {
   endwin();
-  exit(EXIT_SUCCESS);
+  exit(code);
 }
 
 Position curses_center(Position str)

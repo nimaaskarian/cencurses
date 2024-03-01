@@ -122,11 +122,12 @@ const char ** resolve_ascii_ch(char ch)
   return NULL;
 }
 
-void init_ascii(char ** output)
+void init_ascii(Ascii * ascii)
 {
-  output = malloc((FONTLEN+1)*sizeof(char *));
+  ascii->size = (Position){.x = 0, .y = 0};
+  ascii->buff = malloc((FONTLEN+1)*sizeof(char *));
   for (int i = 0; i < FONTLEN; i++) {
-    output[i] = NULL;
+    ascii->buff[i] = NULL;
   }
 }
 
@@ -137,10 +138,17 @@ size_t append_to_ascii(const char ** append, char ** ascii)
 
   for (int i = 0; i < FONTLEN; i++) {
     size_t size;
-    if (ascii[i]) 
-      size = asprintf(&ascii[i], "%s%s", ascii[i], append[i]);
-    else 
+    if (ascii[i]) {
+      size_t str_size = strlen(ascii[i])+1;
+      char * tmp = malloc(str_size*sizeof(char));
+      strncpy(tmp, ascii[i], str_size);
+      tmp[str_size] = '\0';
+      size = asprintf(&ascii[i], "%s%s", tmp, append[i]);
+      free(tmp);
+    }
+    else {
       size = asprintf(&ascii[i], "%s", append[i]);
+    }
 
     if (size > max_size)
       max_size = size;
@@ -151,14 +159,13 @@ size_t append_to_ascii(const char ** append, char ** ascii)
 Ascii resolve_ascii_str(char * line)
 {
   Ascii output;
-  output.buff = malloc((FONTLEN+1)*sizeof(char *));
-  init_ascii(output.buff);
+  init_ascii(&output);
 
   output.size = (Position){.x = 0, .y = FONTLEN};
 
   for (unsigned int i = 0; line[i] != '\0'; i++){
-    const char ** ascii = resolve_ascii_ch(line[i]);
-    int line_size = append_to_ascii(ascii, output.buff);
+    const char ** ascii_to_append = resolve_ascii_ch(line[i]);
+    int line_size = append_to_ascii(ascii_to_append, output.buff);
     if (line_size > output.size.x)
       output.size.x = line_size;
   }

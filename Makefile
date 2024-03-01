@@ -23,3 +23,9 @@ ${NAME}: ${OBJ}
 
 clean:
 	rm ${OBJ}
+
+install: all
+	cp ${NAME} ${PREFIX}/bin/${NAME}
+
+uninstall:
+	rm ${PREFIX}/bin/${NAME}

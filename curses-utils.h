@@ -4,6 +4,6 @@
 #include <ncurses.h>
 #include "position.h"
 void curses_init();
-void curses_quit();
+void curses_quit(int code);
 Position curses_center(Position str);
 #endif // !CURSES_UTILS_H_
