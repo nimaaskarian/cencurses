@@ -1,4 +1,4 @@
-NAME=numcurses
+NAME=cencurses
 PKGS=ncurses
 PREFIX = /usr/local
 MANPREFIX := ${PREFIX}/share/man
